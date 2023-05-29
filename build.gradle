@@ -1,0 +1,64 @@
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.24")
+        classpath("net.serenity-bdd:serenity-single-page-report:2.6.0")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+    slf4jVersion = '1.7.7'
+    serenityCoreVersion = '2.6.0'
+    serenityCucumberVersion = '2.6.0'
+    junitVersion = '4.13.1'
+    assertJVersion = '3.8.0'
+    logbackVersion = '1.2.3'
+}
+
+dependencies {
+    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    implementation "net.serenity-bdd:serenity-rest-assured:${serenityCoreVersion}"
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0"
+
+    implementation "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-cucumber6:${serenityCucumberVersion}",
+            "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
+            "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
+            "junit:junit:${junitVersion}",
+            "org.assertj:assertj-core:${assertJVersion}"
+}
+
+gradle.startParameter.continueOnFailure = true
+test {
+    systemProperties System.getProperties()
+    testLogging.showStandardStreams = true
+    // turn off html reports... windows can't handle certain cucumber test name characters.
+    test.reports.getHtml().enabled = false
+    test.reports.junitXml.enabled = false
+    include 'serenityrunner/TestRunner.class'
+}
+
+serenity {
+    requirementsBaseDir = "src/test/resources"
+    reports = ["single-page-html"]
+}
+
