@@ -20,6 +20,7 @@
 * Add/removal of directories to arrange the code as per the purpose
 * Rename of variables
 * Report generation
+* Code refactored to run on multiple environments (dev, stg etc.) by providing the target URL in run configuration
 * DSL implementation
 
 ## Running the tests
